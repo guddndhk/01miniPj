@@ -24,29 +24,32 @@ public class UpdatePurchaseAction extends Action {
 
 		int tranNo = Integer.parseInt(request.getParameter("tranNo"));
 
-		PurchaseService purService = new PurchaseServiceImpl();
-		PurchaseVO purchaseVO = purService.getPurchase(tranNo);
+		
+		PurchaseVO purchaseVO = new PurchaseVO();
 
-		HttpSession session = request.getSession();
-		System.out.println("업데이트퍼체이스액션 session::" + session);
+		//HttpSession session = request.getSession();
+		//System.out.println("업데이트퍼체이스액션 session::" + session);
 
-		// purchaseVO.setBuyer((UserVO)session.getAttribute("user"));
-		// purchaseVO.setTranNo(Integer.parseInt(request.getParameter("tranNo")));
+		//purchaseVO.setBuyer((UserVO)session.getAttribute("user"));
+		//purchaseVO.setTranNo(Integer.parseInt(request.getParameter("tranNo")));
+		purchaseVO.setTranNo(tranNo);
 		purchaseVO.setPaymentOption(request.getParameter("paymentOption"));
 		purchaseVO.setReceiverName(request.getParameter("receiverName"));
 		purchaseVO.setReceiverPhone(request.getParameter("receiverPhone"));
-		purchaseVO.setDivyAddr(request.getParameter("divyAddr"));
-		purchaseVO.setDivyRequest(request.getParameter("divyrequest"));
+		purchaseVO.setDivyAddr(request.getParameter("receiverAddr"));
+		purchaseVO.setDivyRequest(request.getParameter("receiverRequest"));
 		purchaseVO.setDivyDate(request.getParameter("divyDate"));
 
+		
+		PurchaseService purService = new PurchaseServiceImpl();
 		purService.updatePurcahse(purchaseVO);
 
-		request.setAttribute("purchaseVO", purchaseVO);
+		//request.setAttribute("purchaseVO", purchaseVO);
 
 		System.out.println("업데이트퍼체이스액션 execute() end!!");
 
-		// return "forward:/getPurchase.do?tranNo="+tranNo;
-		return "redirect:/getPurchase.do?tranNo=" + tranNo;
+		return "forward:/getPurchase.do?tranNo="+tranNo;
+		//return "redirect:/getPurchase.do?tranNo=" + tranNo;
 	}
 
 }

@@ -17,32 +17,31 @@ public class ListPurchaseAction extends Action {
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
-		
+
 		SearchVO searchVO = new SearchVO();
-		
+
 		int page = 1;
-		if(request.getParameter("page") != null)
+		if (request.getParameter("page") != null)
 			page = Integer.parseInt(request.getParameter("page"));
-		
+
 		searchVO.setPage(page);
 		searchVO.setSearchCondition(request.getParameter("searchCondition"));
 		searchVO.setSearchKeyword(request.getParameter("searchKeyword"));
-		
+
 		String pageUnit = getServletContext().getInitParameter("pageSize");
 		searchVO.setPageUnit(Integer.parseInt(pageUnit));
-		
+
 		HttpSession session = request.getSession();
-		UserVO userVO = (UserVO)session.getAttribute("user");
-		
-		String buyerId = userVO.getUserId();
-		
+		// UserVO userVO = (UserVO)session.getAttribute("user");
+
+		String buyerId = ((UserVO) session.getAttribute("user")).getUserId();
+
 		PurchaseService purService = new PurchaseServiceImpl();
 		HashMap<String, Object> map = purService.getPurchaseList(searchVO, buyerId);
-		
-		
+
 		request.setAttribute("map", map);
 		request.setAttribute("searchVO", searchVO);
-		
+
 		return "forward:/purchase/listPurchase.jsp";
 	}
 

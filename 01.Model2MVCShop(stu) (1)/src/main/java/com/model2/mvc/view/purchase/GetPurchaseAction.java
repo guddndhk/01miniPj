@@ -14,15 +14,15 @@ public class GetPurchaseAction extends Action {
 	public String execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		// TODO Auto-generated method stub
 		int tranNo = Integer.parseInt(request.getParameter("tranNo"));
-		System.out.println("GetPurchaseAction :: tranNo : "+tranNo);
-		
+		System.out.println("GetPurchaseAction :: tranNo : " + tranNo);
+
 		PurchaseService purService = new PurchaseServiceImpl();
 		PurchaseVO purchaseVO = purService.getPurchase(tranNo);
-		System.out.println("GetPurchaseAction :: purchaseVO : "+purchaseVO);
-		
+		System.out.println("GetPurchaseAction :: purchaseVO : " + purchaseVO);
+
 		request.setAttribute("purchaseVO", purchaseVO);
-		System.out.println("GetPurchaseAction :: purchaseVO2 : "+purchaseVO);
-		
+		System.out.println("GetPurchaseAction :: purchaseVO2 : " + purchaseVO);
+
 		return "forward:/purchase/getPurchase.jsp";
 	}
 
