@@ -107,7 +107,7 @@ public class PurchaseDAO {
 
 		PurchaseVO purchaseVO = null;
 		while (rs.next()) {
-			//ProductVO ProductVO = new ProductVO();
+			// ProductVO ProductVO = new ProductVO();
 			purchaseVO = new PurchaseVO();
 
 			purchaseVO.setTranNo(rs.getInt("TRAN_NO"));
@@ -125,45 +125,47 @@ public class PurchaseDAO {
 		}
 
 		con.close();
-		System.out.println("!!!!!!!! : "+purchaseVO);
+		System.out.println("!!!!!!!! : " + purchaseVO);
 
 		return purchaseVO;
 
 	}
-	
-	public HashMap<String, Object> getPurchaseList(SearchVO searchVO, String buyerId)throws Exception{
-		
+
+	public HashMap<String, Object> getPurchaseList(SearchVO searchVO, String buyerId) throws Exception {
+
 		System.out.println("PurchaseDAO getPurchaseList buyerId체크 : " + buyerId);
 		Connection con = DBUtil.getConnection();
-		//sql문 txt버전 참조
-		//SELECT tran_no,buyer_id ,receiver_name, receiver_phone, tran_status_code
-		//from transaction
-		//WHERE buyer_id = 'user01';
-		//String sql = "SELECT" + " tran_no, buyer_id, receiver_name, receiver_phone, tran_status_code"
-		//+ " FROM transaction" + " WHERE buyer_id = ?";
-		String sql = "SELECT * FROM TRANSACTION  WHERE buyer_id = '"+buyerId+"' ORDER BY tran_no";
-		System.out.println("PurchaseDAO getPurchaseList sql : "+sql);
-		
-		PreparedStatement stmt = con.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
-		//stmt.setString(1, buyerId);
-		System.out.println("getPurchaseList에서 stmt후 sql체크 ::"+sql);
+		// sql문 txt버전 참조
+		// SELECT tran_no,buyer_id ,receiver_name, receiver_phone, tran_status_code
+		// from transaction
+		// WHERE buyer_id = 'user01';
+		// String sql = "SELECT" + " tran_no, buyer_id, receiver_name, receiver_phone,
+		// tran_status_code"
+		// + " FROM transaction" + " WHERE buyer_id = ?";
+		String sql = "SELECT * FROM TRANSACTION  WHERE buyer_id = '" + buyerId + "' ORDER BY tran_no";
+		System.out.println("PurchaseDAO getPurchaseList sql : " + sql);
+
+		PreparedStatement stmt = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE,
+				ResultSet.CONCUR_UPDATABLE);
+		// stmt.setString(1, buyerId);
+		System.out.println("getPurchaseList에서 stmt후 sql체크 ::" + sql);
 		ResultSet rs = stmt.executeQuery();
-		
+
 		rs.last();
-		
+
 		int total = rs.getRow();
-		
+
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put("count", total);
-		
-		rs.absolute(searchVO.getPage() * searchVO.getPageUnit() - searchVO.getPageUnit() +1);
+
+		rs.absolute(searchVO.getPage() * searchVO.getPageUnit() - searchVO.getPageUnit() + 1);
 		System.out.println("PurDAO LIST getPage():" + searchVO.getPage());
 		System.out.println("PurDAO LIST getPageUnit():" + searchVO.getPageUnit());
-		
+
 		PurchaseVO purchaseVO = null;
 		UserService userService = new UserServiceImpl();
 		ArrayList<PurchaseVO> list = new ArrayList<PurchaseVO>();
-		
+
 		if (total > 0) {
 			for (int i = 0; i < searchVO.getPageUnit(); i++) {
 				purchaseVO = new PurchaseVO();
@@ -172,9 +174,9 @@ public class PurchaseDAO {
 				purchaseVO.setReceiverName(rs.getString("RECEIVER_NAME"));
 				purchaseVO.setReceiverPhone(rs.getString("RECEIVER_PHONE"));
 				purchaseVO.setTranCode(rs.getString("TRAN_STATUS_CODE"));
-				
+
 				list.add(purchaseVO);
-				
+
 				if (!rs.next()) {
 					break;
 				}
@@ -183,21 +185,21 @@ public class PurchaseDAO {
 		stmt.close();
 		con.close();
 		map.put("list", list);
-		System.out.println("list : "+map.get("list"));
+		System.out.println("list : " + map.get("list"));
 		return map;
 	}
-	
-	
+
 	public void updatePurchase(PurchaseVO purchaseVO) throws Exception {
 
+		System.out.println("updatePurchaseDAO 시작");
 		Connection con = DBUtil.getConnection();
 
 		String sql = "UPDATE transaction SET payment_option=?, receiver_name=?, receiver_phone=?, demailaddr=?, dlvy_request=?, dlvy_date=? WHERE tran_no=?";
-		System.out.println("updatePurchase SQL::"+sql);
-		
+		System.out.println("updatePurchase SQL::" + sql);
+
 		PreparedStatement stmt = con.prepareStatement(sql);
-		System.out.println("updatePurchase stmt::"+stmt);
-		
+		System.out.println("updatePurchase stmt::" + stmt);
+
 		stmt.setString(1, purchaseVO.getPaymentOption());
 		stmt.setString(2, purchaseVO.getReceiverName());
 		stmt.setString(3, purchaseVO.getReceiverPhone());
@@ -206,10 +208,11 @@ public class PurchaseDAO {
 		stmt.setString(6, purchaseVO.getDivyDate());
 		stmt.setInt(7, purchaseVO.getTranNo());
 		stmt.executeUpdate();
-		
+
 		stmt.close();
 		con.close();
-		
+		System.out.println("업데이트퍼체이스DAO");
+
 	}
 
 }
