@@ -71,7 +71,7 @@ public class PurchaseDAO {
 		PurchaseVO purchaseVO = null;
 		while (rs.next()) {
 			purchaseVO = new PurchaseVO();
-			// purchaseVO.setTranNo(rs.getInt("TRAN_NO"));
+			purchaseVO.setTranNo(rs.getInt("TRAN_NO"));
 			purchaseVO.setPurchaseProd(service2.getProduct(prodNo));
 			purchaseVO.setBuyer(service.getUser(rs.getString("BUYER_ID")));
 			purchaseVO.setPaymentOption(rs.getString("payment_Option"));
@@ -139,12 +139,13 @@ public class PurchaseDAO {
 		//SELECT tran_no,buyer_id ,receiver_name, receiver_phone, tran_status_code
 		//from transaction
 		//WHERE buyer_id = 'user01';
-		String sql = "SELECT" + " tran_no, buyer_id, receiver_name, receiver_phone, tran_status_code"
-		+ " FROM transaction" + " WHERE buyer_id = ?";
+		//String sql = "SELECT" + " tran_no, buyer_id, receiver_name, receiver_phone, tran_status_code"
+		//+ " FROM transaction" + " WHERE buyer_id = ?";
+		String sql = "SELECT * FROM TRANSACTION  WHERE buyer_id = '"+buyerId+"' ORDER BY tran_no";
 		System.out.println("PurchaseDAO getPurchaseList sql : "+sql);
 		
 		PreparedStatement stmt = con.prepareStatement(sql,ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
-		stmt.setString(1, buyerId);
+		//stmt.setString(1, buyerId);
 		System.out.println("getPurchaseList에서 stmt후 sql체크 ::"+sql);
 		ResultSet rs = stmt.executeQuery();
 		
@@ -191,15 +192,24 @@ public class PurchaseDAO {
 
 		Connection con = DBUtil.getConnection();
 
-		String sql = "";
-
+		String sql = "UPDATE transaction SET payment_option=?, receiver_name=?, receiver_phone=?, demailaddr=?, dlvy_request=?, dlvy_date=? WHERE tran_no=?";
+		System.out.println("updatePurchase SQL::"+sql);
+		
 		PreparedStatement stmt = con.prepareStatement(sql);
+		System.out.println("updatePurchase stmt::"+stmt);
+		
 		stmt.setString(1, purchaseVO.getPaymentOption());
 		stmt.setString(2, purchaseVO.getReceiverName());
 		stmt.setString(3, purchaseVO.getReceiverPhone());
 		stmt.setString(4, purchaseVO.getDivyAddr());
 		stmt.setString(5, purchaseVO.getDivyRequest());
-
+		stmt.setString(6, purchaseVO.getDivyDate());
+		stmt.setInt(7, purchaseVO.getTranNo());
+		stmt.executeUpdate();
+		
+		stmt.close();
+		con.close();
+		
 	}
 
 }
