@@ -189,6 +189,74 @@ public class PurchaseDAO {
 		return map;
 	}
 
+	public HashMap<String, Object> getSaleList(SearchVO searchVO) throws Exception {
+
+		Connection con = DBUtil.getConnection();
+
+		String sql = "SELECT * FROM product";
+		if (searchVO.getSearchCondition() != null) {
+			if (searchVO.getSearchCondition().equals("0")) {
+				sql += " WHERE prod_no LIKE '%" + searchVO.getSearchKeyword() + "%'";
+			} else if (searchVO.getSearchCondition().equals("1")) {
+				sql += " WHERE prod_name LIKE '%" + searchVO.getSearchKeyword() + "%'";
+			}
+		}
+		sql += " ORDER BY prod_no";
+
+		System.out.println("퍼체이스DAO getSaleList sql::" + sql);
+
+		PreparedStatement stmt = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE,
+				ResultSet.CONCUR_UPDATABLE);
+
+		ResultSet rs = stmt.executeQuery();
+
+		rs.last();
+
+		int total = rs.getRow();
+		System.out.println("퍼체이스DAO getSaleList total::" + total);
+
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		map.put("count", new Integer(total));
+
+		rs.absolute(searchVO.getPage() * searchVO.getPageUnit() - searchVO.getPageUnit() + 1);
+		System.out.println("PurDAO SALELIST getPage():" + searchVO.getPage());
+		System.out.println("PurDAO SALELIST getPageUnit():" + searchVO.getPageUnit());
+
+		ArrayList<ProductVO> list = new ArrayList<ProductVO>();
+
+		if (total > 0) {
+			for (int i = 0; i < searchVO.getPageUnit(); i++) {
+
+				ProductVO productVO = new ProductVO();
+				productVO.setProdNo(rs.getInt("PROD_NO"));
+				productVO.setProdName(rs.getString("PROD_NAME"));
+				productVO.setProdDetail(rs.getString("PROD_DETAIL"));
+				productVO.setManuDate(rs.getString("MANUFACTURE_DAY"));
+				productVO.setPrice(rs.getInt("PRICE"));
+				productVO.setFileName(rs.getString("IMAGE_FILE"));
+				productVO.setRegDate(rs.getDate("REG_DATE"));
+				if (this.findPurchase2(productVO.getProdNo()) != null) {
+					productVO.setProTranCode(this.findPurchase2(productVO.getProdNo()).getTranCode());
+				}
+				list.add(productVO);
+
+				if (!rs.next()) {
+					break;
+				}
+
+			}
+		}
+
+		map.put("list", list);
+		System.out.println("퍼체이스DAO saleLIST map.size()::" + map.size());
+		System.out.println("퍼체이스DAO saleLIST map.get(list)::" + map.get("list"));
+
+		stmt.close();
+		con.close();
+
+		return map;
+	}
+
 	public void updatePurchase(PurchaseVO purchaseVO) throws Exception {
 
 		System.out.println("updatePurchaseDAO 시작");
