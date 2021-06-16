@@ -33,14 +33,14 @@ public class AddPurchaseAction extends Action {
 		userVO.setUserId(request.getParameter("buyerId"));
 		productVO.setProdNo(Integer.parseInt(request.getParameter("prodNo")));
 		//purchaseVO.setBuyer(userVO);
-		purchaseVO.setDivyAddr(request.getParameter("divyAddr"));		
+		purchaseVO.setDivyAddr(request.getParameter("receiverAddr"));		
 		purchaseVO.setPaymentOption(request.getParameter("paymentOption"));
 		purchaseVO.setReceiverName(request.getParameter("receiverName"));
 		purchaseVO.setReceiverPhone(request.getParameter("receiverPhone"));
-		purchaseVO.setDivyRequest(request.getParameter("divyRequest"));
+		purchaseVO.setDivyRequest(request.getParameter("receiverRequest"));
 		purchaseVO.setTranCode(request.getParameter("tranCode"));
 		//purchaseVO.setOrderDate(request.getParameter("orderDate"));
-		purchaseVO.setDivyDate(request.getParameter("divyDate"));
+		purchaseVO.setDivyDate(request.getParameter("receiverDate"));
 		purchaseVO.setTranCode("1");
 		
 		ProductService proService = new ProductServiceImpl();

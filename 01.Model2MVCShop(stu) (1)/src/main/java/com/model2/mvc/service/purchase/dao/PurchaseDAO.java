@@ -282,5 +282,27 @@ public class PurchaseDAO {
 		System.out.println("업데이트퍼체이스DAO");
 
 	}
-
+	
+	public void updateTranCode (PurchaseVO purchaseVO)throws Exception{
+		
+		System.out.println("PurchaseDAO updateTranCode() starts and purchaseVO::"+purchaseVO);
+		
+		Connection con = DBUtil.getConnection();
+		
+		String sql = " UPDATE transaction SET tran_status_code=? WHERE tran_no=?";
+		
+		PreparedStatement stmt = con.prepareStatement(sql);
+		stmt.setString(1, purchaseVO.getTranCode());
+		stmt.setInt(2, purchaseVO.getTranNo());
+		
+		stmt.executeUpdate();
+		
+		stmt.close();
+		con.close();
+		
+		System.out.println("PurchaseDAO updateTranCode() end");
+		
+	}
+	
+	
 }
